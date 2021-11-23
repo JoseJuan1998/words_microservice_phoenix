@@ -29,4 +29,21 @@ defmodule HangmanWeb.Router do
     delete "/words/:id", WordController, :delete_word
     delete "/words", WordController, :delete_word
   end
+
+  # coveralls-ignore-start
+  def swagger_info do
+    %{
+      info: %{
+        version: "1.0",
+        title: "Words API"
+      }
+    }
+  end
+  # coveralls-ignore-stop
+
+  scope "/manager/doc" do
+    forward "/", PhoenixSwagger.Plug.SwaggerUI,
+      otp_app: :hangman,
+      swagger_file: "swagger.json"
+  end
 end

@@ -10,6 +10,15 @@ import Config
 config :hangman,
   ecto_repos: [Hangman.Repo]
 
+# Configures Swagger
+config :hangman, :phoenix_swagger,
+swagger_files: %{
+  "priv/static/swagger.json" => [
+    router: HangmanWeb.Router,
+    endpoint: HangmanWeb.Endpoint
+  ]
+}
+
 # Configures the endpoint
 config :hangman, HangmanWeb.Endpoint,
   url: [host: "localhost"],
