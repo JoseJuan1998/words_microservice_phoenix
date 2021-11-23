@@ -12,7 +12,8 @@ defmodule HangmanWeb.WordView do
   def render("single_word.json", %{word: word}) do
     %{
       id: word.id,
-      word: word.word
+      word: word.word,
+      difficulty: word.difficulty
     }
   end
 end

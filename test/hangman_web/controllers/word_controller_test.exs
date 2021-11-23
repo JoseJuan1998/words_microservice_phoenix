@@ -39,7 +39,8 @@ defmodule HangmanWeb.WordControllerTest do
       assert %{
         "words" => [%{
           "id" => _id,
-          "word" => _word
+          "word" => _word,
+          "difficulty" => _difficulty
         }]
       } = response
     end
@@ -82,7 +83,8 @@ defmodule HangmanWeb.WordControllerTest do
       assert %{
         "word" => %{
           "id" => _id,
-          "word" => _word
+          "word" => _word,
+          "difficulty" => _difficulty
         }
       } = response
     end
@@ -125,7 +127,8 @@ defmodule HangmanWeb.WordControllerTest do
       assert %{
         "word" => %{
           "id" => _id,
-          "word" => _word
+          "word" => _word,
+          "difficulty" => _difficulty
         }
       } = response
     end
@@ -196,7 +199,8 @@ defmodule HangmanWeb.WordControllerTest do
       assert %{
         "word" => %{
           "id" => _id,
-          "word" => _word
+          "word" => _word,
+          "difficulty" => _difficulty
         }
       } = response
     end
@@ -253,7 +257,8 @@ defmodule HangmanWeb.WordControllerTest do
       assert %{
         "word" => %{
           "id" => _id,
-          "word" => _word
+          "word" => _word,
+          "difficulty" => _difficulty
         }
       } = response
     end

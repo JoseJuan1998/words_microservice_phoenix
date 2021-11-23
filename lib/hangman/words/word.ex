@@ -5,6 +5,7 @@ defmodule Hangman.Words.Word do
 
   schema "words" do
     field :word, :string
+    field :difficulty, :string
 
     timestamps()
   end
@@ -25,6 +26,26 @@ defmodule Hangman.Words.Word do
     end
   end
 
+  defp set_difficulty(%{valid?: false} = changeset), do: changeset
+
+  defp set_difficulty(%{valid?: true} = changeset) do
+    cond do
+      changeset.changes == %{} ->
+        changeset
+      true ->
+        difficulty = cond do
+          String.length(changeset.changes.word) <= 5 ->
+            "EASY"
+          String.length(changeset.changes.word) > 5 and String.length(changeset.changes.word) <= 8 ->
+            "MEDIUM"
+          true ->
+            "HARD"
+        end
+        changeset
+        |> put_change(:difficulty, difficulty)
+    end
+  end
+
   def found_changeset(attrs) do
     attrs
     |> get_changeset()
@@ -36,6 +57,7 @@ defmodule Hangman.Words.Word do
     |> validate_required([:word])
     |> validate_format(:word, ~r{^[a-zA-ZÀ-ÿ ]+$})
     |> unique_constraint(:word, message: "Word already exists")
+    |> set_difficulty()
   end
 
   def update_changeset(attrs) do
@@ -43,6 +65,7 @@ defmodule Hangman.Words.Word do
     |> get_changeset()
     |> cast(attrs, [:word])
     |> validate_required([:word])
+    |> set_difficulty()
   end
 
   def delete_changeset(attrs) do

@@ -15,8 +15,18 @@ defmodule Hangman.WordTest do
       {:ok, word: word}
     end
 
-    test "Returns the word created" do
+    test "Returns the word easy created" do
       changeset = Words.change_word(%Word{}, %{"word" => "lion"})
+      assert changeset.valid? == true
+    end
+
+    test "Returns the word medium created" do
+      changeset = Words.change_word(%Word{}, %{"word" => "elephant"})
+      assert changeset.valid? == true
+    end
+
+    test "Returns the word hard created" do
+      changeset = Words.change_word(%Word{}, %{"word" => "spiderman"})
       assert changeset.valid? == true
     end
 
@@ -79,6 +89,7 @@ defmodule Hangman.WordTest do
 
     test "Returns the word updated", %{word: word} do
       {:ok, word_updated} = Words.update_word(%{"id" => word.id, "word" => "lion"})
+      Words.update_word(%{"id" => word.id, "word" => "lion"})
       assert not is_nil(word_updated)
     end
 
