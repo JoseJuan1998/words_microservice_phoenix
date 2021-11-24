@@ -238,6 +238,7 @@
         "parameters": [
           {
             "type": "string",
+            "required": true,
             "name": "difficulty",
             "in": "path",
             "description": "The current difficulty"
