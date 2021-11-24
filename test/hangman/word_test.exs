@@ -81,7 +81,7 @@ defmodule Hangman.WordTest do
     end
 
     test "Error when word is not found" do
-      words = Words.list_word_game(%{"difficulty" => "FSFSD"})
+      words = Words.list_word_game(%{"difficulty" => "FSFSDF"})
       assert words == []
     end
   end
