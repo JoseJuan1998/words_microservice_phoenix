@@ -64,6 +64,28 @@ defmodule Hangman.WordTest do
     end
   end
 
+  describe "[Unit] get_word_game():" do
+    setup do
+      {:ok, word} = Words.create_word(%{"word" => "apple"})
+      {:ok, word: word}
+    end
+
+    test "Returns a word with difficulty" do
+      words = Words.list_word_game(%{"difficulty" => "EASY"})
+      assert words != []
+    end
+
+    test "Returns a word without difficulty" do
+      words = Words.list_word_game()
+      assert words != []
+    end
+
+    test "Error when word is not found" do
+      words = Words.list_word_game(%{"difficulty" => "FSFSD"})
+      assert words == []
+    end
+  end
+
   describe "[Unit] get_word():" do
     setup do
       {:ok, word} = Words.create_word(%{"word" => "apple"})

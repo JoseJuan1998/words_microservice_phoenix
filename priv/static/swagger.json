@@ -25,6 +25,13 @@
           {
             "type": "string",
             "required": true,
+            "name": "authorization",
+            "in": "header",
+            "description": "Token to access"
+          },
+          {
+            "type": "string",
+            "required": true,
             "name": "np",
             "in": "path",
             "description": "The current page"
@@ -109,6 +116,13 @@
           }
         },
         "parameters": [
+          {
+            "type": "string",
+            "required": true,
+            "name": "authorization",
+            "in": "header",
+            "description": "Token to access"
+          },
           {
             "type": "string",
             "required": true,
@@ -199,6 +213,38 @@
         ],
         "operationId": "HangmanWeb.WordController.create_word",
         "description": "Returns JSON with word created"
+      }
+    },
+    "/game/word/{difficulty}": {
+      "get": {
+        "tags": [
+          "Word"
+        ],
+        "summary": "An specif word by difficulty",
+        "responses": {
+          "204": {
+            "schema": {
+              "$ref": "#/definitions/GetWordGameResponseError"
+            },
+            "description": "No word"
+          },
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/GetWordGameResponse"
+            },
+            "description": "Success"
+          }
+        },
+        "parameters": [
+          {
+            "type": "string",
+            "name": "difficulty",
+            "in": "path",
+            "description": "The current difficulty"
+          }
+        ],
+        "operationId": "HangmanWeb.WordController.get_word_game",
+        "description": "Returns JSON with word requested"
       }
     }
   },
@@ -319,11 +365,6 @@
       },
       "description": "Response of pagination"
     },
-    "GetWordsRequest": {
-      "type": "object",
-      "title": "GetWordsRequest",
-      "description": "GET to get words paginated"
-    },
     "GetWordResponseError": {
       "type": "object",
       "title": "GetWordResponseError",
@@ -348,6 +389,26 @@
       "type": "object",
       "title": "GetWordRequest",
       "description": "GET to get word"
+    },
+    "GetWordGameResponseError": {
+      "type": "object",
+      "title": "GetWordGameResponseError",
+      "example": {
+        "error": "There are no words"
+      },
+      "description": "Response of error"
+    },
+    "GetWordGameResponse": {
+      "type": "object",
+      "title": "GetWordGameResponse",
+      "example": {
+        "word": {
+          "word": "APPLE",
+          "id": 1,
+          "difficulty": "EASY"
+        }
+      },
+      "description": "Response of word for game"
     },
     "DeleteWordResponseError": {
       "type": "object",

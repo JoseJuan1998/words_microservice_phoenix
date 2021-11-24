@@ -60,6 +60,63 @@ defmodule HangmanWeb.WordControllerTest do
     end
   end
 
+  describe "[GET] /word/:difficulty:" do
+    setup do
+      conn = build_conn()
+      conn
+      |> put_req_header("authorization", Token.auth_sign(1))
+      |> post(Routes.word_path(conn, :create_word, %{word: "apple"}))
+      |> json_response(201)
+    end
+
+    test "Returns a word with difficulty" do
+      conn = build_conn()
+
+      response =
+        conn
+        |> get(Routes.word_path(conn, :get_word_game, "EASY"))
+        |> json_response(:ok)
+
+      assert %{
+        "word" => %{
+          "id" => _id,
+          "word" => _word,
+          "difficulty" => _difficulty
+        }
+      } = response
+    end
+
+    test "Returns a word without difficulty" do
+      conn = build_conn()
+
+      response =
+        conn
+        |> get(Routes.word_path(conn, :get_word_game))
+        |> json_response(:ok)
+
+      assert %{
+        "word" => %{
+          "id" => _id,
+          "word" => _word,
+          "difficulty" => _difficulty
+        }
+      } = response
+    end
+
+    test "Error when 'words' is empty" do
+      conn = build_conn()
+
+      response =
+        conn
+        |> get(Routes.word_path(conn, :get_word_game, "FSFSDFSD"))
+        |> json_response(:ok)
+
+      assert %{
+        "error" => _error
+      } = response
+    end
+  end
+
   describe "[GET] /words/:id:" do
     setup do
       conn = build_conn()

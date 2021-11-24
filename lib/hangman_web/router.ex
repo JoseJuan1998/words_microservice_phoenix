@@ -30,6 +30,16 @@ defmodule HangmanWeb.Router do
     delete "/words", WordController, :delete_word
   end
 
+  scope "/game", HangmanWeb do
+    pipe_through :api
+
+    options "/word", OptionsController, :options
+    options "/word/:difficulty", OptionsController, :options
+
+    get "/word/:difficulty", WordController, :get_word_game
+    get "/word", WordController, :get_word_game
+  end
+
   # coveralls-ignore-start
   def swagger_info do
     %{
@@ -43,7 +53,7 @@ defmodule HangmanWeb.Router do
 
   scope "/manager/doc" do
     forward "/", PhoenixSwagger.Plug.SwaggerUI,
-      otp_app: :hangman,
-      swagger_file: "swagger.json"
+    otp_app: :hangman,
+    swagger_file: "swagger.json"
   end
 end

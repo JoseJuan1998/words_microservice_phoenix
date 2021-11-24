@@ -7,8 +7,9 @@ defmodule HangmanWeb.WordController do
 
   action_fallback HangmanWeb.WordErrorController
 
-  plug :authenticate_api_user when action in [:create_word, :update_word, :delete_word]
+  plug :authenticate_api_user when action in [:get_word, :get_words, :create_word, :update_word, :delete_word]
 
+  # coveralls-ignore-start
   def swagger_definitions do
     %{
       Word:
@@ -23,11 +24,6 @@ defmodule HangmanWeb.WordController do
             inserted_at(:string, "Creation timestamp", format: :datetime)
             updated_at(:string, "Update timestamp", format: :datetime)
           end
-        end,
-      GetWordsRequest:
-        swagger_schema do
-          title("GetWordsRequest")
-          description("GET to get words paginated")
         end,
       GetWordsResponse:
         swagger_schema do
@@ -46,6 +42,26 @@ defmodule HangmanWeb.WordController do
       GetWordsResponseError:
         swagger_schema do
           title("GetWordsResponseError")
+          description("Response of error")
+          example(%{
+            error: "There are no words"
+          })
+        end,
+      GetWordGameResponse:
+        swagger_schema do
+          title("GetWordGameResponse")
+          description("Response of word for game")
+          example(%{
+            word: %{
+              id: 1,
+              word: "APPLE",
+              difficulty: "EASY"
+            }
+          })
+        end,
+      GetWordGameResponseError:
+        swagger_schema do
+          title("GetWordGameResponseError")
           description("Response of error")
           example(%{
             error: "There are no words"
@@ -177,12 +193,14 @@ defmodule HangmanWeb.WordController do
     summary("All words")
     description("Returns JSON with all words requested")
     parameters do
+      authorization :header, :string, "Token to access", required: true
       np :path, :string, "The current page", required: true
       nr :path, :string, "The rows per page", required: true
     end
     response(200, "Success", Schema.ref(:GetWordsResponse))
     response(204, "No words" ,Schema.ref(:GetWordsResponseError))
   end
+  # coveralls-ignore-stop
 
   def get_words(conn, params) do
     words = Words.list_words(params)
@@ -198,16 +216,47 @@ defmodule HangmanWeb.WordController do
     end
   end
 
+  # coveralls-ignore-start
+  swagger_path :get_word_game do
+    get("/game/word/{difficulty}")
+    summary("An specif word by difficulty")
+    description("Returns JSON with word requested")
+    parameters do
+      difficulty :path, :string, "The current difficulty"
+    end
+    response(200, "Success", Schema.ref(:GetWordGameResponse))
+    response(204, "No word" ,Schema.ref(:GetWordGameResponseError))
+  end
+  # coveralls-ignore-stop
+
+  def get_word_game(conn, params) do
+    words = Words.list_word_game(params)
+    case words != [] do
+      true ->
+        word = Enum.at(words, 0)
+        conn
+        |> put_status(200)
+        |> render("word.json", %{word: word})
+      false ->
+        conn
+        |> put_status(200)
+        |> json(%{error: "There are no word"})
+    end
+  end
+
+  # coveralls-ignore-start
   swagger_path :get_word do
     get("/manager/words/{id}")
     summary("One word")
     description("Returns JSON with word requested")
     parameters do
+      authorization :header, :string, "Token to access", required: true
       id :path, :string, "The id of the word", required: true
     end
     response(200, "Success", Schema.ref(:GetWordResponse))
     response(404, "No word found" ,Schema.ref(:GetWordResponseError))
   end
+  # coveralls-ignore-stop
 
   def get_word(conn, params) do
     case Words.get_word(params) do
@@ -220,6 +269,7 @@ defmodule HangmanWeb.WordController do
     end
   end
 
+  # coveralls-ignore-start
   swagger_path :create_word do
     post("/manager/words")
     summary("Create word")
@@ -231,6 +281,7 @@ defmodule HangmanWeb.WordController do
     response(200, "Success", Schema.ref(:CreateWordResponse))
     response(400, "Bad Request" ,Schema.ref(:CreateWordResponseError))
   end
+  # coveralls-ignore-stop
 
   def create_word(conn, params) do
     case Words.create_word(params) do
@@ -243,6 +294,7 @@ defmodule HangmanWeb.WordController do
     end
   end
 
+  # coveralls-ignore-start
   swagger_path :update_word do
     put("/manager/words/{id}")
     summary("Update word")
@@ -255,6 +307,7 @@ defmodule HangmanWeb.WordController do
     response(200, "Success", Schema.ref(:UpdateWordResponse))
     response(400, "Bad Request" ,Schema.ref(:UpdateWordResponseError))
   end
+  # coveralls-ignore-stop
 
   def update_word(conn, params) do
     case Words.update_word(params) do
@@ -267,6 +320,7 @@ defmodule HangmanWeb.WordController do
     end
   end
 
+  # coveralls-ignore-start
   swagger_path :delete_word do
     delete("/manager/words/{id}")
     summary("Delete word")
@@ -278,6 +332,7 @@ defmodule HangmanWeb.WordController do
     response(200, "Success", Schema.ref(:DeleteWordResponse))
     response(400, "Bad Request" ,Schema.ref(:DeleteWordResponseError))
   end
+  # coveralls-ignore-stop
 
   def delete_word(conn, params) do
     case Words.delete_word(params) do

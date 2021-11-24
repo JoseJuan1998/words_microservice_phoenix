@@ -13,6 +13,16 @@ defmodule Hangman.Words do
     Repo.all(query)
   end
 
+  def list_word_game(attrs \\ %{}) do
+    query = cond do
+      not is_nil(attrs["difficulty"]) ->
+        from u in Word, where: u.difficulty == ^String.upcase(attrs["difficulty"]), order_by: fragment("RANDOM()"), limit: 1, select: u
+      true ->
+        from u in Word, order_by: fragment("RANDOM()"), limit: 1, select: u
+    end
+    Repo.all(query)
+  end
+
   def get_word(attrs \\ %{}) do
     attrs
     |> Word.found_changeset()
