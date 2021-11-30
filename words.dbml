@@ -1,0 +1,15 @@
+Project Words {
+  database_type: 'PostgreSQL'
+  Note: '''
+    # Hangman Game Database
+    **Database for words service**
+  '''
+}
+Table words {
+  id int [pk, increment]
+  word varchar [not null, unique]
+  difficulty varchar
+  created_at varchar [note: 'When user created']
+  updated_at varchar [note: 'When user updated']
+  note: "table 'words' contains word information"
+}

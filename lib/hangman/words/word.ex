@@ -56,6 +56,7 @@ defmodule Hangman.Words.Word do
     |> cast(attrs, [:word])
     |> validate_required([:word])
     |> validate_format(:word, ~r{^[a-zA-ZÀ-ÿ ]+$})
+    |> validate_length(:word, min: 2, max: 30)
     |> unique_constraint(:word, message: "Word already exists")
     |> set_difficulty()
   end
