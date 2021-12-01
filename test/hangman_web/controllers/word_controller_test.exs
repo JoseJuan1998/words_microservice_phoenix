@@ -153,7 +153,7 @@ defmodule HangmanWeb.WordControllerTest do
         conn
         |> put_req_header("authorization", Token.auth_sign(1))
         |> get(Routes.word_path(conn, :get_word, 0))
-        |> json_response(400)
+        |> json_response(404)
 
       assert %{
         "id" => _id
@@ -269,7 +269,7 @@ defmodule HangmanWeb.WordControllerTest do
         conn
         |> put_req_header("authorization", Token.auth_sign(1))
         |> put(Routes.word_path(conn, :update_word, %{word: "lion"}))
-        |> json_response(400)
+        |> json_response(404)
 
       assert %{
         "id" => _id
@@ -283,7 +283,7 @@ defmodule HangmanWeb.WordControllerTest do
         conn
         |> put_req_header("authorization", Token.auth_sign(1))
         |> put(Routes.word_path(conn, :update_word, 0, %{word: "lion"}))
-        |> json_response(400)
+        |> json_response(404)
 
       assert %{
         "id" => _id
@@ -327,7 +327,7 @@ defmodule HangmanWeb.WordControllerTest do
         conn
         |> put_req_header("authorization", Token.auth_sign(1))
         |> delete(Routes.word_path(conn, :delete_word))
-        |> json_response(400)
+        |> json_response(404)
 
       assert %{
         "id" => _id
@@ -341,7 +341,7 @@ defmodule HangmanWeb.WordControllerTest do
         conn
         |> put_req_header("authorization", Token.auth_sign(1))
         |> delete(Routes.word_path(conn, :delete_word, 0))
-        |> json_response(400)
+        |> json_response(404)
 
       assert %{
         "id" => _id

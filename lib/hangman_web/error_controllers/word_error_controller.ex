@@ -13,8 +13,15 @@ defmodule HangmanWeb.WordErrorController do
 
   def call(conn, {:error, changeset = %Ecto.Changeset{}}) do
     errors = errors_on(changeset)
-    conn
-    |> put_status(400)
-    |> json(errors)
+    case Map.fetch(errors, :id) do
+      :error ->
+        conn
+        |> put_status(400)
+        |> json(errors)
+      {:ok, _error} ->
+        conn
+        |> put_status(404)
+        |> json(errors)
+    end
   end
 end
