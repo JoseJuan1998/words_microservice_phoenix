@@ -5,8 +5,8 @@ defmodule HangmanWeb.WordView do
     %{word: render("single_word.json", %{word: word})}
   end
 
-  def render("words.json", %{words: words}) do
-    %{words: render_many(words, HangmanWeb.WordView, "single_word.json")}
+  def render("words.json", %{words: words, count: count}) do
+    %{count: count, words: render_many(words, HangmanWeb.WordView, "single_word.json")}
   end
 
   def render("single_word.json", %{word: word}) do

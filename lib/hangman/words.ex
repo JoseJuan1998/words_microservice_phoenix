@@ -3,6 +3,10 @@ defmodule Hangman.Words do
   alias Hangman.Repo
   alias Hangman.Words.Word
 
+  def count_words() do
+    Repo.one(from u in Word, select: count(u))
+  end
+
   def list_words(attrs \\ %{}) do
     query = cond do
       not is_nil(attrs["np"]) and not is_nil(attrs["nr"]) ->
