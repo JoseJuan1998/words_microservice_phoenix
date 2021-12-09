@@ -111,7 +111,11 @@ defmodule Hangman.WordTest do
 
     test "Returns the word updated", %{word: word} do
       {:ok, word_updated} = Words.update_word(%{"id" => word.id, "word" => "lion"})
-      Words.update_word(%{"id" => word.id, "word" => "lion"})
+      assert not is_nil(word_updated)
+    end
+
+    test "Returns the word updated no change", %{word: word} do
+      {:ok, word_updated} = Words.update_word(%{"id" => word.id})
       assert not is_nil(word_updated)
     end
 

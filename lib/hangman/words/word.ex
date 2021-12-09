@@ -46,6 +46,15 @@ defmodule Hangman.Words.Word do
     end
   end
 
+  defp setup_spaces(%{valid?: false} = changeset), do: changeset
+
+  defp setup_spaces(%{valid?: true, changes: %{word: word}} = changeset) do
+    changeset
+    |> put_change(:word, String.upcase(String.trim(word)))
+  end
+
+  defp setup_spaces(%{valid?: true} = changeset), do: changeset
+
   def found_changeset(attrs) do
     attrs
     |> get_changeset()
@@ -57,6 +66,7 @@ defmodule Hangman.Words.Word do
     |> validate_required([:word])
     |> validate_format(:word, ~r{^[a-zA-ZÀ-ÿ ]+$})
     |> validate_length(:word, min: 2, max: 30)
+    |> setup_spaces()
     |> unique_constraint(:word, message: "Word already exists")
     |> set_difficulty()
   end
@@ -66,6 +76,10 @@ defmodule Hangman.Words.Word do
     |> get_changeset()
     |> cast(attrs, [:word])
     |> validate_required([:word])
+    |> validate_format(:word, ~r{^[a-zA-ZÀ-ÿ ]+$})
+    |> validate_length(:word, min: 2, max: 30)
+    |> setup_spaces()
+    |> unique_constraint(:word, message: "Word already exists")
     |> set_difficulty()
   end
 
