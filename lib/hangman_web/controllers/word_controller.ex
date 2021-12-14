@@ -7,7 +7,7 @@ defmodule HangmanWeb.WordController do
 
   action_fallback HangmanWeb.WordErrorController
 
-  # plug :authenticate_api_user when action in [:get_word, :get_words, :create_word, :update_word, :delete_word]
+  plug :authenticate_api_user when action in [:get_word, :get_words, :create_word, :update_word, :delete_word]
 
   # coveralls-ignore-start
   def swagger_definitions do
