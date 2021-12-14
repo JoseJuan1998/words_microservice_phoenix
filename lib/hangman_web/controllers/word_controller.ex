@@ -207,7 +207,7 @@ defmodule HangmanWeb.WordController do
     words = Words.list_words(params)
     case words != [] do
       true ->
-        count = Words.count_words()
+        count = Words.count_words(params)
         conn
         |> put_status(200)
         |> render("words.json", %{count: count, words: words})
