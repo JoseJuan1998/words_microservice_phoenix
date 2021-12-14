@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "paths": {
-    "/manager/words/{np}/{nr}": {
+    "/manager/words/{np}/{nr}?char={char}": {
       "get": {
         "tags": [
           "Word"
@@ -42,6 +42,13 @@
             "name": "nr",
             "in": "path",
             "description": "The rows per page"
+          },
+          {
+            "type": "string",
+            "required": false,
+            "name": "char",
+            "in": "path",
+            "description": "The word you want to find"
           }
         ],
         "operationId": "HangmanWeb.WordController.get_words",

@@ -189,7 +189,7 @@ defmodule HangmanWeb.WordController do
   end
 
   swagger_path :get_words do
-    get("/manager/words/{np}/{nr}/{char}")
+    get("/manager/words/{np}/{nr}?char={char}")
     summary("All words")
     description("Returns JSON with all words requested")
     parameters do
