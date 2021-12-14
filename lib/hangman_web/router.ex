@@ -23,7 +23,6 @@ defmodule HangmanWeb.Router do
 
     get "/words/:id", WordController, :get_word
     get "/words/:np/:nr", WordController, :get_words
-    get "/words/:np/:nr/:char", WordController, :get_words
     get "/words", WordController, :get_words
     post "/words", WordController, :create_word
     put "/words/:id", WordController, :update_word
