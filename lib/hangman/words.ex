@@ -10,12 +10,27 @@ defmodule Hangman.Words do
   def list_words(attrs \\ %{}) do
     query = cond do
       not is_nil(attrs["np"]) and not is_nil(attrs["nr"]) ->
-        from u in Word, offset: ^((String.to_integer(attrs["np"]) - 1) * (String.to_integer(attrs["nr"]))), limit: ^attrs["nr"], select: u
+        cond do
+          not is_nil(attrs["char"]) ->
+            from u in Word, where: like(u.word, ^"%#{String.trim(String.upcase(attrs["char"]))}%"), order_by: [asc: u.word], offset: ^((String.to_integer(attrs["np"]) - 1) * (String.to_integer(attrs["nr"]))), limit: ^attrs["nr"], select: u
+          true ->
+            from u in Word, offset: ^((String.to_integer(attrs["np"]) - 1) * (String.to_integer(attrs["nr"]))), limit: ^attrs["nr"], select: u
+        end
       true ->
         from u in Word, offset: 0, limit: 0, select: u
     end
     Repo.all(query)
   end
+
+  # def list_words(attrs \\ %{}) do
+  #   query = cond do
+  #     not is_nil(attrs["np"]) and not is_nil(attrs["nr"]) ->
+  #       from u in Word, offset: ^((String.to_integer(attrs["np"]) - 1) * (String.to_integer(attrs["nr"]))), limit: ^attrs["nr"], select: u
+  #     true ->
+  #       from u in Word, offset: 0, limit: 0, select: u
+  #   end
+  #   Repo.all(query)
+  # end
 
   def list_word_game(attrs \\ %{}) do
     query = cond do

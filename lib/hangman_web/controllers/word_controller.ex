@@ -189,13 +189,14 @@ defmodule HangmanWeb.WordController do
   end
 
   swagger_path :get_words do
-    get("/manager/words/{np}/{nr}")
+    get("/manager/words/{np}/{nr}/{char}")
     summary("All words")
     description("Returns JSON with all words requested")
     parameters do
       authorization :header, :string, "Token to access", required: true
       np :path, :string, "The current page", required: true
       nr :path, :string, "The rows per page", required: true
+      char :path, :string, "The word you want to find", required: false
     end
     response(200, "Success", Schema.ref(:GetWordsResponse))
     response(204, "No words" ,Schema.ref(:GetWordsResponseError))
