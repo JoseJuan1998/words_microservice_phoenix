@@ -58,6 +58,31 @@ defmodule Hangman.WordTest do
       assert words != []
     end
 
+    test "Returns words that match" do
+      words = Words.list_words(%{"np" => "1", "nr" => "5", "char" => "a"})
+      assert words != []
+    end
+
+    test "Returns words ASC" do
+      words = Words.list_words(%{"np" => "1", "nr" => "5", "field" => "word", "order" => "asc"})
+      assert words != []
+    end
+
+    test "Returns words DESC" do
+      words = Words.list_words(%{"np" => "1", "nr" => "5", "field" => "word", "order" => "desc"})
+      assert words != []
+    end
+
+    test "Returns all words when field is not word" do
+      words = Words.list_words(%{"np" => "1", "nr" => "5", "field" => "difficulty", "order" => "asc"})
+      assert words != []
+    end
+
+    test "Returns all words when order is not ASC or DESC" do
+      words = Words.list_words(%{"np" => "1", "nr" => "5", "field" => "word", "order" => "asdf"})
+      assert words != []
+    end
+
     test "Error words is empty" do
       words = Words.list_words()
       assert words == []

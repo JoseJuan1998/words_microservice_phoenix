@@ -22,7 +22,7 @@ defmodule HangmanWeb.WordControllerTest do
     setup do
       conn = build_conn()
       conn
-      |> put_req_header("authorization", Token.auth_sign(1))
+      |> put_req_header("authorization", Token.auth_sign(%{email: "juan@mail.com", user_id: 1}))
       |> post(Routes.word_path(conn, :create_word, %{word: "apple"}))
       |> json_response(201)
     end
@@ -32,8 +32,26 @@ defmodule HangmanWeb.WordControllerTest do
 
       response =
         conn
-        |> put_req_header("authorization", Token.auth_sign(1))
+        |> put_req_header("authorization", Token.auth_sign(%{email: "juan@mail.com", user_id: 1}))
         |> get(Routes.word_path(conn, :get_words, 1, 5))
+        |> json_response(:ok)
+
+      assert %{
+        "words" => [%{
+          "id" => _id,
+          "word" => _word,
+          "difficulty" => _difficulty
+        }]
+      } = response
+    end
+
+    test "Returns a list of words matched" do
+      conn = build_conn()
+
+      response =
+        conn
+        |> put_req_header("authorization", Token.auth_sign(%{email: "juan@mail.com", user_id: 1}))
+        |> get(Routes.word_path(conn, :get_words, 1, 5, %{char: "a"}))
         |> json_response(:ok)
 
       assert %{
@@ -50,7 +68,7 @@ defmodule HangmanWeb.WordControllerTest do
 
       response =
         conn
-        |> put_req_header("authorization", Token.auth_sign(1))
+        |> put_req_header("authorization", Token.auth_sign(%{email: "juan@mail.com", user_id: 1}))
         |> get(Routes.word_path(conn, :get_words))
         |> json_response(:ok)
 
@@ -64,7 +82,7 @@ defmodule HangmanWeb.WordControllerTest do
     setup do
       conn = build_conn()
       conn
-      |> put_req_header("authorization", Token.auth_sign(1))
+      |> put_req_header("authorization", Token.auth_sign(%{email: "juan@mail.com", user_id: 1}))
       |> post(Routes.word_path(conn, :create_word, %{word: "apple"}))
       |> json_response(201)
     end
@@ -121,7 +139,7 @@ defmodule HangmanWeb.WordControllerTest do
     setup do
       conn = build_conn()
       params = conn
-      |> put_req_header("authorization", Token.auth_sign(1))
+      |> put_req_header("authorization", Token.auth_sign(%{email: "juan@mail.com", user_id: 1}))
       |> post(Routes.word_path(conn, :create_word, %{word: "apple"}))
       |> json_response(201)
 
@@ -133,7 +151,7 @@ defmodule HangmanWeb.WordControllerTest do
 
       response =
         conn
-        |> put_req_header("authorization", Token.auth_sign(1))
+        |> put_req_header("authorization", Token.auth_sign(%{email: "juan@mail.com", user_id: 1}))
         |> get(Routes.word_path(conn, :get_word, params["word"]["id"]))
         |> json_response(:ok)
 
@@ -151,7 +169,7 @@ defmodule HangmanWeb.WordControllerTest do
 
       response =
         conn
-        |> put_req_header("authorization", Token.auth_sign(1))
+        |> put_req_header("authorization", Token.auth_sign(%{email: "juan@mail.com", user_id: 1}))
         |> get(Routes.word_path(conn, :get_word, 0))
         |> json_response(404)
 
@@ -165,7 +183,7 @@ defmodule HangmanWeb.WordControllerTest do
     setup do
       conn = build_conn()
       params = conn
-      |> put_req_header("authorization", Token.auth_sign(1))
+      |> put_req_header("authorization", Token.auth_sign(%{email: "juan@mail.com", user_id: 1}))
       |> post(Routes.word_path(conn, :create_word, %{word: "apple"}))
       |> json_response(201)
 
@@ -177,7 +195,7 @@ defmodule HangmanWeb.WordControllerTest do
 
       response =
         conn
-        |> put_req_header("authorization", Token.auth_sign(1))
+        |> put_req_header("authorization", Token.auth_sign(%{email: "juan@mail.com", user_id: 1}))
         |> post(Routes.word_path(conn, :create_word, %{word: "lion"}))
         |> json_response(201)
 
@@ -195,7 +213,7 @@ defmodule HangmanWeb.WordControllerTest do
 
       response =
         conn
-        |> put_req_header("authorization", Token.auth_sign(1))
+        |> put_req_header("authorization", Token.auth_sign(%{email: "juan@mail.com", user_id: 1}))
         |> post(Routes.word_path(conn, :create_word))
         |> json_response(400)
 
@@ -209,7 +227,7 @@ defmodule HangmanWeb.WordControllerTest do
 
       response =
         conn
-        |> put_req_header("authorization", Token.auth_sign(1))
+        |> put_req_header("authorization", Token.auth_sign(%{email: "juan@mail.com", user_id: 1}))
         |> post(Routes.word_path(conn, :create_word, %{word: "apple"}))
         |> json_response(400)
 
@@ -223,7 +241,7 @@ defmodule HangmanWeb.WordControllerTest do
 
       response =
         conn
-        |> put_req_header("authorization", Token.auth_sign(1))
+        |> put_req_header("authorization", Token.auth_sign(%{email: "juan@mail.com", user_id: 1}))
         |> post(Routes.word_path(conn, :create_word, %{word: "42423"}))
         |> json_response(400)
 
@@ -237,7 +255,7 @@ defmodule HangmanWeb.WordControllerTest do
     setup do
       conn = build_conn()
       params = conn
-      |> put_req_header("authorization", Token.auth_sign(1))
+      |> put_req_header("authorization", Token.auth_sign(%{email: "juan@mail.com", user_id: 1}))
       |> post(Routes.word_path(conn, :create_word, %{word: "apple"}))
       |> json_response(201)
 
@@ -249,7 +267,7 @@ defmodule HangmanWeb.WordControllerTest do
 
       response =
         conn
-        |> put_req_header("authorization", Token.auth_sign(1))
+        |> put_req_header("authorization", Token.auth_sign(%{email: "juan@mail.com", user_id: 1}))
         |> put(Routes.word_path(conn, :update_word, params["word"]["id"],%{word: "lion"}))
         |> json_response(205)
 
@@ -267,7 +285,7 @@ defmodule HangmanWeb.WordControllerTest do
 
       response =
         conn
-        |> put_req_header("authorization", Token.auth_sign(1))
+        |> put_req_header("authorization", Token.auth_sign(%{email: "juan@mail.com", user_id: 1}))
         |> put(Routes.word_path(conn, :update_word, %{word: "lion"}))
         |> json_response(404)
 
@@ -281,7 +299,7 @@ defmodule HangmanWeb.WordControllerTest do
 
       response =
         conn
-        |> put_req_header("authorization", Token.auth_sign(1))
+        |> put_req_header("authorization", Token.auth_sign(%{email: "juan@mail.com", user_id: 1}))
         |> put(Routes.word_path(conn, :update_word, 0, %{word: "lion"}))
         |> json_response(404)
 
@@ -295,7 +313,7 @@ defmodule HangmanWeb.WordControllerTest do
     setup do
       conn = build_conn()
       params = conn
-      |> put_req_header("authorization", Token.auth_sign(1))
+      |> put_req_header("authorization", Token.auth_sign(%{email: "juan@mail.com", user_id: 1}))
       |> post(Routes.word_path(conn, :create_word, %{word: "apple"}))
       |> json_response(201)
 
@@ -307,7 +325,7 @@ defmodule HangmanWeb.WordControllerTest do
 
       response =
         conn
-        |> put_req_header("authorization", Token.auth_sign(1))
+        |> put_req_header("authorization", Token.auth_sign(%{email: "juan@mail.com", user_id: 1}))
         |> delete(Routes.word_path(conn, :delete_word, params["word"]["id"]))
         |> json_response(205)
 
@@ -325,7 +343,7 @@ defmodule HangmanWeb.WordControllerTest do
 
       response =
         conn
-        |> put_req_header("authorization", Token.auth_sign(1))
+        |> put_req_header("authorization", Token.auth_sign(%{email: "juan@mail.com", user_id: 1}))
         |> delete(Routes.word_path(conn, :delete_word))
         |> json_response(404)
 
@@ -339,7 +357,7 @@ defmodule HangmanWeb.WordControllerTest do
 
       response =
         conn
-        |> put_req_header("authorization", Token.auth_sign(1))
+        |> put_req_header("authorization", Token.auth_sign(%{email: "juan@mail.com", user_id: 1}))
         |> delete(Routes.word_path(conn, :delete_word, 0))
         |> json_response(404)
 

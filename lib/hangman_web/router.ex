@@ -18,7 +18,6 @@ defmodule HangmanWeb.Router do
     options "/", OptionsController, :options
     options "/words/:id", OptionsController, :options
     options "/words/:np/:nr", OptionsController, :options
-    options "/words/:np/:nr/:char", OptionsController, :options
     options "/words", OptionsController, :options
 
     get "/words/:id", WordController, :get_word
