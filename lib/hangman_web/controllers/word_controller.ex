@@ -4,6 +4,7 @@ defmodule HangmanWeb.WordController do
   use HangmanWeb, :controller
   alias Hangman.Words
   alias Hangman.Words.Word
+  alias Hangman.Token
 
   action_fallback HangmanWeb.WordErrorController
 
@@ -288,6 +289,9 @@ defmodule HangmanWeb.WordController do
   def create_word(conn, params) do
     case Words.create_word(params) do
       {:ok, word} ->
+        [token] = get_req_header(conn, "authorization")
+        {:ok, user} = Token.verify_auth(token)
+        report_params = %{email: user.email, word: word, action: "insert"}
         conn
         |> put_status(201)
         |> render("word.json", %{word: word})
@@ -314,6 +318,9 @@ defmodule HangmanWeb.WordController do
   def update_word(conn, params) do
     case Words.update_word(params) do
       {:ok, word} ->
+        [token] = get_req_header(conn, "authorization")
+        {:ok, user} = Token.verify_auth(token)
+        report_params = %{email: user.email, word: word, action: "update"}
         conn
         |> put_status(205)
         |> render("word.json", %{word: word})
@@ -339,6 +346,9 @@ defmodule HangmanWeb.WordController do
   def delete_word(conn, params) do
     case Words.delete_word(params) do
       {:ok, word} ->
+        [token] = get_req_header(conn, "authorization")
+        {:ok, user} = Token.verify_auth(token)
+        report_params = %{email: user.email, word: word, action: "delete"}
         conn
         |> put_status(205)
         |> render("word.json", %{word: word})
