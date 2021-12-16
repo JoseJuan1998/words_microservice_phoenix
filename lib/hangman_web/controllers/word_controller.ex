@@ -190,7 +190,7 @@ defmodule HangmanWeb.WordController do
   end
 
   swagger_path :get_words do
-    get("/manager/words/{np}/{nr}?char={char}")
+    get("/manager/words/{np}/{nr}?char={char}&field={field}&order={order}")
     summary("All words")
     description("Returns JSON with all words requested")
     parameters do
@@ -198,6 +198,8 @@ defmodule HangmanWeb.WordController do
       np :path, :string, "The current page", required: true
       nr :path, :string, "The rows per page", required: true
       char :path, :string, "The word you want to find", required: false
+      field :path, :string, "The field you want to sort", required: false
+      order :path, :string, "The order you want to sort", required: false
     end
     response(200, "Success", Schema.ref(:GetWordsResponse))
     response(204, "No words" ,Schema.ref(:GetWordsResponseError))

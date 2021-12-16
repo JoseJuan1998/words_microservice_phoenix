@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "paths": {
-    "/manager/words/{np}/{nr}?char={char}": {
+    "/manager/words/{np}/{nr}?char={char}&field={field}&order={order}": {
       "get": {
         "tags": [
           "Word"
@@ -49,6 +49,20 @@
             "name": "char",
             "in": "path",
             "description": "The word you want to find"
+          },
+          {
+            "type": "string",
+            "required": false,
+            "name": "field",
+            "in": "path",
+            "description": "The field you want to sort"
+          },
+          {
+            "type": "string",
+            "required": false,
+            "name": "order",
+            "in": "path",
+            "description": "The order you want to sort"
           }
         ],
         "operationId": "HangmanWeb.WordController.get_words",
