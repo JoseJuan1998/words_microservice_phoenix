@@ -21,7 +21,7 @@ defmodule Hangman.MixProject do
   def application do
     [
       mod: {Hangman.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :amqp]
     ]
   end
 
@@ -49,7 +49,9 @@ defmodule Hangman.MixProject do
       {:ex_json_schema, "~> 0.7.1"},
       {:poison, "~> 3.0"},
       {:excoveralls, "~> 0.10", only: :test},
-      {:cors_plug, "~> 2.0"}
+      {:cors_plug, "~> 2.0"},
+      {:json, "~> 1.4"},
+      {:amqp, "~> 3.0"}
     ]
   end
 

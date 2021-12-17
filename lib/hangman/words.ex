@@ -3,37 +3,6 @@ defmodule Hangman.Words do
   alias Hangman.Repo
   alias Hangman.Words.Word
 
-  defp get_pagination(attrs) do
-    cond do
-      not is_nil(attrs["char"]) ->
-        from u in Word, where: like(u.word, ^"%#{String.trim(String.upcase(attrs["char"]))}%"), order_by: [asc: u.word], offset: ^((String.to_integer(attrs["np"]) - 1) * (String.to_integer(attrs["nr"]))), limit: ^attrs["nr"], select: u
-      not is_nil(attrs["field"]) and not is_nil(attrs["order"]) ->
-        get_field(attrs)
-      true ->
-        from u in Word, order_by: [asc: u.word], offset: ^((String.to_integer(attrs["np"]) - 1) * (String.to_integer(attrs["nr"]))), limit: ^attrs["nr"], select: u
-    end
-  end
-
-  defp get_field(attrs) do
-    case String.to_atom(String.downcase(attrs["field"])) do
-      :word ->
-        get_sorting(attrs)
-      _other ->
-        from u in Word, order_by: [asc: u.word], offset: ^((String.to_integer(attrs["np"]) - 1) * (String.to_integer(attrs["nr"]))), limit: ^attrs["nr"], select: u
-    end
-  end
-
-  defp get_sorting(attrs) do
-    case String.to_atom(String.upcase(attrs["order"])) do
-      :ASC ->
-        from u in Word, order_by: ^[asc: String.to_atom(String.downcase(attrs["field"]))], offset: ^((String.to_integer(attrs["np"]) - 1) * (String.to_integer(attrs["nr"]))), limit: ^attrs["nr"], select: u
-      :DESC ->
-        from u in Word, order_by: ^[desc: String.to_atom(String.downcase(attrs["field"]))],offset: ^((String.to_integer(attrs["np"]) - 1) * (String.to_integer(attrs["nr"]))), limit: ^attrs["nr"], select: u
-      _other ->
-        from u in Word, order_by: [asc: u.word], offset: ^((String.to_integer(attrs["np"]) - 1) * (String.to_integer(attrs["nr"]))), limit: ^attrs["nr"], select: u
-    end
-  end
-
   def count_words(attrs \\ %{}) do
     query = cond do
       not is_nil(attrs["char"]) ->
@@ -90,5 +59,36 @@ defmodule Hangman.Words do
   def change_word(%Word{} = word, attrs \\ %{}) do
     word
     |> Word.create_changeset(attrs)
+  end
+
+  defp get_pagination(attrs) do
+    cond do
+      not is_nil(attrs["char"]) ->
+        from u in Word, where: like(u.word, ^"%#{String.trim(String.upcase(attrs["char"]))}%"), order_by: [asc: u.word], offset: ^((String.to_integer(attrs["np"]) - 1) * (String.to_integer(attrs["nr"]))), limit: ^attrs["nr"], select: u
+      not is_nil(attrs["field"]) and not is_nil(attrs["order"]) ->
+        get_field(attrs)
+      true ->
+        from u in Word, order_by: [asc: u.word], offset: ^((String.to_integer(attrs["np"]) - 1) * (String.to_integer(attrs["nr"]))), limit: ^attrs["nr"], select: u
+    end
+  end
+
+  defp get_field(attrs) do
+    case String.to_atom(String.downcase(attrs["field"])) do
+      :word ->
+        get_sorting(attrs)
+      _other ->
+        from u in Word, order_by: [asc: u.word], offset: ^((String.to_integer(attrs["np"]) - 1) * (String.to_integer(attrs["nr"]))), limit: ^attrs["nr"], select: u
+    end
+  end
+
+  defp get_sorting(attrs) do
+    case String.to_atom(String.upcase(attrs["order"])) do
+      :ASC ->
+        from u in Word, order_by: ^[asc: String.to_atom(String.downcase(attrs["field"]))], offset: ^((String.to_integer(attrs["np"]) - 1) * (String.to_integer(attrs["nr"]))), limit: ^attrs["nr"], select: u
+      :DESC ->
+        from u in Word, order_by: ^[desc: String.to_atom(String.downcase(attrs["field"]))],offset: ^((String.to_integer(attrs["np"]) - 1) * (String.to_integer(attrs["nr"]))), limit: ^attrs["nr"], select: u
+      _other ->
+        from u in Word, order_by: [asc: u.word], offset: ^((String.to_integer(attrs["np"]) - 1) * (String.to_integer(attrs["nr"]))), limit: ^attrs["nr"], select: u
+    end
   end
 end

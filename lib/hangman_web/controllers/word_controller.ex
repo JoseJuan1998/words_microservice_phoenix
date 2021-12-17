@@ -293,7 +293,8 @@ defmodule HangmanWeb.WordController do
       {:ok, word} ->
         [token] = get_req_header(conn, "authorization")
         {:ok, user} = Token.verify_auth(token)
-        report_params = %{email: user.email, word: word, action: "insert"}
+        report_params = %{email: user.email, word: word.word, action: "insert"}
+        rabbit_connect(report_params)
         conn
         |> put_status(201)
         |> render("word.json", %{word: word})
@@ -322,7 +323,8 @@ defmodule HangmanWeb.WordController do
       {:ok, word} ->
         [token] = get_req_header(conn, "authorization")
         {:ok, user} = Token.verify_auth(token)
-        report_params = %{email: user.email, word: word, action: "update"}
+        report_params = %{email: user.email, word: word.word, action: "update"}
+        rabbit_connect(report_params)
         conn
         |> put_status(205)
         |> render("word.json", %{word: word})
@@ -350,12 +352,24 @@ defmodule HangmanWeb.WordController do
       {:ok, word} ->
         [token] = get_req_header(conn, "authorization")
         {:ok, user} = Token.verify_auth(token)
-        report_params = %{email: user.email, word: word, action: "delete"}
+        report_params = %{email: user.email, word: word.word, action: "delete"}
+        rabbit_connect(report_params)
         conn
         |> put_status(205)
         |> render("word.json", %{word: word})
       {:error, changeset} ->
         {:error, changeset}
     end
+  end
+
+  defp rabbit_connect(params) do
+    options = [host: "localhost", port: 5672, virtual_host: "/", username: "prueba", password: "prueba"]
+    {:ok, connection} = AMQP.Connection.open(options)
+    {:ok, channel} = AMQP.Channel.open(connection)
+    AMQP.Queue.declare(channel, "log")
+    message = JSON.encode!(params)
+    AMQP.Basic.publish(channel, "", "log", message)
+    IO.puts " [x] Sent JSON"
+    AMQP.Connection.close(connection)
   end
 end
