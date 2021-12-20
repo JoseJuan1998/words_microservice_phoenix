@@ -11,183 +11,7 @@ defmodule HangmanWeb.WordController do
   plug :authenticate_api_user when action in [:get_word, :get_words, :create_word, :update_word, :delete_word]
 
   # coveralls-ignore-start
-  def swagger_definitions do
-    %{
-      Word:
-        swagger_schema do
-          title("Word")
-          description("Words to handle")
-
-          properties do
-            id(:integer, "Words ID")
-            word(:string, "Word text", required: true)
-            difficulty(:string, "Difficulty of the word")
-            inserted_at(:string, "Creation timestamp", format: :datetime)
-            updated_at(:string, "Update timestamp", format: :datetime)
-          end
-        end,
-      GetWordsResponse:
-        swagger_schema do
-          title("GetWordsResponse")
-          description("Response of pagination")
-          example(%{
-            words: [
-              %{
-                id: 1,
-                word: "APPLE",
-                difficulty: "EASY"
-              }
-            ]
-          })
-        end,
-      GetWordsResponseError:
-        swagger_schema do
-          title("GetWordsResponseError")
-          description("Response of error")
-          example(%{
-            error: "There are no words"
-          })
-        end,
-      GetWordGameResponse:
-        swagger_schema do
-          title("GetWordGameResponse")
-          description("Response of word for game")
-          example(%{
-            word: %{
-              id: 1,
-              word: "APPLE",
-              difficulty: "EASY"
-            }
-          })
-        end,
-      GetWordGameResponseError:
-        swagger_schema do
-          title("GetWordGameResponseError")
-          description("Response of error")
-          example(%{
-            error: "There are no words"
-          })
-        end,
-      GetWordRequest:
-        swagger_schema do
-          title("GetWordRequest")
-          description("GET to get word")
-        end,
-      GetWordResponse:
-        swagger_schema do
-          title("GetWordResponse")
-          description("Response of word")
-          example(%{
-            word:
-              %{
-                id: 1,
-                word: "APPLE",
-                difficulty: "EASY"
-              }
-          })
-        end,
-      GetWordResponseError:
-        swagger_schema do
-          title("GetWordResponseError")
-          description("Response of error")
-          example(%{
-            id: "Word not found"
-          })
-        end,
-      CreateWordRequest:
-        swagger_schema do
-          title("CreateWordRequest")
-          description("POST body to create a word")
-          property(:words, Schema.array(:Word), "The word text")
-          example(%{
-            word: "APPLE"
-          })
-        end,
-      CreateWordResponse:
-        swagger_schema do
-          title("CreateWordResponse")
-          description("Response schema of the word created")
-          property(:words, Schema.array(:Word), "The word created")
-          example(%{
-            word: %{
-              id: 1,
-              word: "APPLE",
-              difficulty: "EASY"
-            }
-          })
-        end,
-      CreateWordResponseError:
-        swagger_schema do
-          title("CreateWordResponseError")
-          description("Response schema of errors")
-          property(:words, Schema.array(:Word), "The word created")
-          example(%{
-            word1: "word can't be blank",
-            word2: "word already exists"
-          })
-        end,
-      UpdateWordRequest:
-        swagger_schema do
-          title("UpdateWordRequest")
-          description("PUT body to update a word")
-          property(:words, Schema.array(:Word), "The word text")
-          example(%{
-            word: "ELEPHANT"
-          })
-        end,
-      UpdateWordResponse:
-        swagger_schema do
-          title("UpdateWordResponse")
-          description("Response schema of the word updated")
-          property(:words, Schema.array(:Word), "The word created")
-          example(%{
-            word: %{
-              id: 1,
-              word: "ELEPHANT",
-              difficulty: "MEDIUM"
-            }
-          })
-        end,
-      UpdateWordResponseError:
-        swagger_schema do
-          title("UpdateWordResponseError")
-          description("Response schema of errors")
-          property(:words, Schema.array(:Word), "The word updated")
-          example(%{
-            word: "can't be blank",
-            id1: "Word not found",
-            id2: "can't be blank"
-          })
-        end,
-      DeleteWordRequest:
-        swagger_schema do
-          title("DeleteWordRequest")
-          description("DELETE to delete word")
-        end,
-      DeleteWordResponse:
-        swagger_schema do
-          title("DeleteWordResponse")
-          description("Response of word")
-          example(%{
-            word:
-              %{
-                id: 1,
-                word: "APPLE",
-                difficulty: "EASY"
-              }
-          })
-        end,
-      DeleteWordResponseError:
-        swagger_schema do
-          title("DeleteWordResponseError")
-          description("Response of error")
-          example(%{
-            id1: "word not found",
-            id2: "can't be blank"
-          })
-        end,
-    }
-  end
+  
 
   swagger_path :get_words do
     get("/manager/words/{np}/{nr}?char={char}&field={field}&order={order}")
@@ -293,7 +117,9 @@ defmodule HangmanWeb.WordController do
       {:ok, word} ->
         [token] = get_req_header(conn, "authorization")
         {:ok, user} = Token.verify_auth(token)
-        report_params = %{email: user.email, word: word.word, action: "insert"}
+        report_params = %{email: user.email, word: word.word, action: "INSERT"}
+        rabbit_connect(report_params)
+        report_params = %{word: word.word, user: user.email}
         rabbit_connect(report_params)
         conn
         |> put_status(201)
@@ -323,7 +149,7 @@ defmodule HangmanWeb.WordController do
       {:ok, word} ->
         [token] = get_req_header(conn, "authorization")
         {:ok, user} = Token.verify_auth(token)
-        report_params = %{email: user.email, word: word.word, action: "update"}
+        report_params = %{email: user.email, word: word.word, action: "UPDATE"}
         rabbit_connect(report_params)
         conn
         |> put_status(205)
@@ -352,7 +178,7 @@ defmodule HangmanWeb.WordController do
       {:ok, word} ->
         [token] = get_req_header(conn, "authorization")
         {:ok, user} = Token.verify_auth(token)
-        report_params = %{email: user.email, word: word.word, action: "delete"}
+        report_params = %{email: user.email, word: word.word, action: "DELETE"}
         rabbit_connect(report_params)
         conn
         |> put_status(205)
