@@ -11,7 +11,7 @@ defmodule HangmanWeb.WordController do
   plug :authenticate_api_user when action in [:get_word, :get_words, :create_word, :update_word, :delete_word]
 
   # coveralls-ignore-start
-  
+
 
   swagger_path :get_words do
     get("/manager/words/{np}/{nr}?char={char}&field={field}&order={order}")
@@ -63,6 +63,9 @@ defmodule HangmanWeb.WordController do
     case words != [] do
       true ->
         word = Enum.at(words, 0)
+        report_params = %{word: word.word}
+        IO.inspect(report_params)
+        rabbit_connect(report_params)
         conn
         |> put_status(200)
         |> render("word.json", %{word: word})
