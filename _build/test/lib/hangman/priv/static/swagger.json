@@ -1,0 +1,518 @@
+{
+  "swagger": "2.0",
+  "paths": {
+    "/manager/words/{np}/{nr}?char={char}&field={field}&order={order}": {
+      "get": {
+        "tags": [
+          "Word"
+        ],
+        "summary": "All words",
+        "responses": {
+          "204": {
+            "schema": {
+              "$ref": "#/definitions/GetWordsResponseError"
+            },
+            "description": "No words"
+          },
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/GetWordsResponse"
+            },
+            "description": "Success"
+          }
+        },
+        "parameters": [
+          {
+            "type": "string",
+            "required": true,
+            "name": "authorization",
+            "in": "header",
+            "description": "Token to access"
+          },
+          {
+            "type": "string",
+            "required": true,
+            "name": "np",
+            "in": "path",
+            "description": "The current page"
+          },
+          {
+            "type": "string",
+            "required": true,
+            "name": "nr",
+            "in": "path",
+            "description": "The rows per page"
+          },
+          {
+            "type": "string",
+            "required": false,
+            "name": "char",
+            "in": "path",
+            "description": "The word you want to find"
+          },
+          {
+            "type": "string",
+            "required": false,
+            "name": "field",
+            "in": "path",
+            "description": "The field you want to sort"
+          },
+          {
+            "type": "string",
+            "required": false,
+            "name": "order",
+            "in": "path",
+            "description": "The order you want to sort"
+          }
+        ],
+        "operationId": "HangmanWeb.WordController.get_words",
+        "description": "Returns JSON with all words requested"
+      }
+    },
+    "/manager/words/{id}": {
+      "put": {
+        "tags": [
+          "Word"
+        ],
+        "summary": "Update word",
+        "responses": {
+          "400": {
+            "schema": {
+              "$ref": "#/definitions/UpdateWordResponseError"
+            },
+            "description": "Bad Request"
+          },
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/UpdateWordResponse"
+            },
+            "description": "Success"
+          }
+        },
+        "parameters": [
+          {
+            "type": "string",
+            "required": true,
+            "name": "authorization",
+            "in": "header",
+            "description": "Token to access"
+          },
+          {
+            "type": "string",
+            "required": true,
+            "name": "id",
+            "in": "path",
+            "description": "The id of the word to update"
+          },
+          {
+            "schema": {
+              "$ref": "#/definitions/UpdateWordRequest"
+            },
+            "required": true,
+            "name": "word",
+            "in": "body",
+            "description": "The word data"
+          }
+        ],
+        "operationId": "HangmanWeb.WordController.update_word",
+        "description": "Returns JSON with word updated"
+      },
+      "get": {
+        "tags": [
+          "Word"
+        ],
+        "summary": "One word",
+        "responses": {
+          "404": {
+            "schema": {
+              "$ref": "#/definitions/GetWordResponseError"
+            },
+            "description": "No word found"
+          },
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/GetWordResponse"
+            },
+            "description": "Success"
+          }
+        },
+        "parameters": [
+          {
+            "type": "string",
+            "required": true,
+            "name": "authorization",
+            "in": "header",
+            "description": "Token to access"
+          },
+          {
+            "type": "string",
+            "required": true,
+            "name": "id",
+            "in": "path",
+            "description": "The id of the word"
+          }
+        ],
+        "operationId": "HangmanWeb.WordController.get_word",
+        "description": "Returns JSON with word requested"
+      },
+      "delete": {
+        "tags": [
+          "Word"
+        ],
+        "summary": "Delete word",
+        "responses": {
+          "400": {
+            "schema": {
+              "$ref": "#/definitions/DeleteWordResponseError"
+            },
+            "description": "Bad Request"
+          },
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/DeleteWordResponse"
+            },
+            "description": "Success"
+          }
+        },
+        "parameters": [
+          {
+            "type": "string",
+            "required": true,
+            "name": "authorization",
+            "in": "header",
+            "description": "Token to access"
+          },
+          {
+            "type": "string",
+            "required": true,
+            "name": "id",
+            "in": "path",
+            "description": "The id of the word to delete"
+          }
+        ],
+        "operationId": "HangmanWeb.WordController.delete_word",
+        "description": "Returns JSON with word deleted"
+      }
+    },
+    "/manager/words": {
+      "post": {
+        "tags": [
+          "Word"
+        ],
+        "summary": "Create word",
+        "responses": {
+          "400": {
+            "schema": {
+              "$ref": "#/definitions/CreateWordResponseError"
+            },
+            "description": "Bad Request"
+          },
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/CreateWordResponse"
+            },
+            "description": "Success"
+          }
+        },
+        "parameters": [
+          {
+            "type": "string",
+            "required": true,
+            "name": "authorization",
+            "in": "header",
+            "description": "Token to access"
+          },
+          {
+            "schema": {
+              "$ref": "#/definitions/CreateWordRequest"
+            },
+            "required": true,
+            "name": "word",
+            "in": "body",
+            "description": "The word data"
+          }
+        ],
+        "operationId": "HangmanWeb.WordController.create_word",
+        "description": "Returns JSON with word created"
+      }
+    },
+    "/game/word/{difficulty}": {
+      "get": {
+        "tags": [
+          "Word"
+        ],
+        "summary": "An specif word by difficulty",
+        "responses": {
+          "204": {
+            "schema": {
+              "$ref": "#/definitions/GetWordGameResponseError"
+            },
+            "description": "No word"
+          },
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/GetWordGameResponse"
+            },
+            "description": "Success"
+          }
+        },
+        "parameters": [
+          {
+            "type": "string",
+            "required": true,
+            "name": "difficulty",
+            "in": "path",
+            "description": "The current difficulty"
+          }
+        ],
+        "operationId": "HangmanWeb.WordController.get_word_game",
+        "description": "Returns JSON with word requested"
+      }
+    }
+  },
+  "info": {
+    "version": "1.0",
+    "title": "Words API"
+  },
+  "host": "localhost:4000",
+  "definitions": {
+    "Word": {
+      "type": "object",
+      "title": "Word",
+      "required": [
+        "word"
+      ],
+      "properties": {
+        "word": {
+          "type": "string",
+          "description": "Word text"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "datetime",
+          "description": "Update timestamp"
+        },
+        "inserted_at": {
+          "type": "string",
+          "format": "datetime",
+          "description": "Creation timestamp"
+        },
+        "id": {
+          "type": "integer",
+          "description": "Words ID"
+        },
+        "difficulty": {
+          "type": "string",
+          "description": "Difficulty of the word"
+        }
+      },
+      "description": "Words to handle"
+    },
+    "UpdateWordResponseError": {
+      "type": "object",
+      "title": "UpdateWordResponseError",
+      "properties": {
+        "words": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Word"
+          },
+          "description": "The word updated"
+        }
+      },
+      "example": {
+        "word": "can't be blank",
+        "id2": "can't be blank",
+        "id1": "Word not found"
+      },
+      "description": "Response schema of errors"
+    },
+    "UpdateWordResponse": {
+      "type": "object",
+      "title": "UpdateWordResponse",
+      "properties": {
+        "words": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Word"
+          },
+          "description": "The word created"
+        }
+      },
+      "example": {
+        "word": {
+          "word": "ELEPHANT",
+          "id": 1,
+          "difficulty": "MEDIUM"
+        }
+      },
+      "description": "Response schema of the word updated"
+    },
+    "UpdateWordRequest": {
+      "type": "object",
+      "title": "UpdateWordRequest",
+      "properties": {
+        "words": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Word"
+          },
+          "description": "The word text"
+        }
+      },
+      "example": {
+        "word": "ELEPHANT"
+      },
+      "description": "PUT body to update a word"
+    },
+    "GetWordsResponseError": {
+      "type": "object",
+      "title": "GetWordsResponseError",
+      "example": {
+        "error": "There are no words"
+      },
+      "description": "Response of error"
+    },
+    "GetWordsResponse": {
+      "type": "object",
+      "title": "GetWordsResponse",
+      "example": {
+        "words": [
+          {
+            "word": "APPLE",
+            "id": 1,
+            "difficulty": "EASY"
+          }
+        ]
+      },
+      "description": "Response of pagination"
+    },
+    "GetWordResponseError": {
+      "type": "object",
+      "title": "GetWordResponseError",
+      "example": {
+        "id": "Word not found"
+      },
+      "description": "Response of error"
+    },
+    "GetWordResponse": {
+      "type": "object",
+      "title": "GetWordResponse",
+      "example": {
+        "word": {
+          "word": "APPLE",
+          "id": 1,
+          "difficulty": "EASY"
+        }
+      },
+      "description": "Response of word"
+    },
+    "GetWordRequest": {
+      "type": "object",
+      "title": "GetWordRequest",
+      "description": "GET to get word"
+    },
+    "GetWordGameResponseError": {
+      "type": "object",
+      "title": "GetWordGameResponseError",
+      "example": {
+        "error": "There are no words"
+      },
+      "description": "Response of error"
+    },
+    "GetWordGameResponse": {
+      "type": "object",
+      "title": "GetWordGameResponse",
+      "example": {
+        "word": {
+          "word": "APPLE",
+          "id": 1,
+          "difficulty": "EASY"
+        }
+      },
+      "description": "Response of word for game"
+    },
+    "DeleteWordResponseError": {
+      "type": "object",
+      "title": "DeleteWordResponseError",
+      "example": {
+        "id2": "can't be blank",
+        "id1": "word not found"
+      },
+      "description": "Response of error"
+    },
+    "DeleteWordResponse": {
+      "type": "object",
+      "title": "DeleteWordResponse",
+      "example": {
+        "word": {
+          "word": "APPLE",
+          "id": 1,
+          "difficulty": "EASY"
+        }
+      },
+      "description": "Response of word"
+    },
+    "DeleteWordRequest": {
+      "type": "object",
+      "title": "DeleteWordRequest",
+      "description": "DELETE to delete word"
+    },
+    "CreateWordResponseError": {
+      "type": "object",
+      "title": "CreateWordResponseError",
+      "properties": {
+        "words": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Word"
+          },
+          "description": "The word created"
+        }
+      },
+      "example": {
+        "word2": "word already exists",
+        "word1": "word can't be blank"
+      },
+      "description": "Response schema of errors"
+    },
+    "CreateWordResponse": {
+      "type": "object",
+      "title": "CreateWordResponse",
+      "properties": {
+        "words": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Word"
+          },
+          "description": "The word created"
+        }
+      },
+      "example": {
+        "word": {
+          "word": "APPLE",
+          "id": 1,
+          "difficulty": "EASY"
+        }
+      },
+      "description": "Response schema of the word created"
+    },
+    "CreateWordRequest": {
+      "type": "object",
+      "title": "CreateWordRequest",
+      "properties": {
+        "words": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Word"
+          },
+          "description": "The word text"
+        }
+      },
+      "example": {
+        "word": "APPLE"
+      },
+      "description": "POST body to create a word"
+    }
+  }
+}

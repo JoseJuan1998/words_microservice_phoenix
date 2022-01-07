@@ -154,6 +154,8 @@ defmodule HangmanWeb.WordController do
         {:ok, user} = Token.verify_auth(token)
         report_params = %{email: user.email, word: word.word, action: "UPDATE"}
         rabbit_connect(report_params)
+        report_params = %{word: word.word, user: user.email}
+        rabbit_connect(report_params)
         conn
         |> put_status(205)
         |> render("word.json", %{word: word})
