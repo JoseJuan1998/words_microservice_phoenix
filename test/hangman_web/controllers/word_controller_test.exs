@@ -1,6 +1,7 @@
 defmodule HangmanWeb.WordControllerTest do
   use HangmanWeb.ConnCase
   alias Hangman.Token
+  alias HangmanWeb.Auth.Guardian
 
   setup_all do: []
 
@@ -20,19 +21,20 @@ defmodule HangmanWeb.WordControllerTest do
 
   describe "[GET] /words/:np/:nr:" do
     setup do
+      {:ok, token, _} = Guardian.test_token_auth(%{name: "Juan", id: 1, lastname: "Rincon", email: "juan@mail.com"})
       conn = build_conn()
       conn
-      |> put_req_header("authorization", Token.auth_sign(%{email: "juan@mail.com", user_id: 1}))
+      |> put_req_header("authorization", "Bearer "<>token)
       |> post(Routes.word_path(conn, :create_word, %{word: "apple"}))
       |> json_response(201)
     end
 
     test "Returns a list of words" do
       conn = build_conn()
-
+      {:ok, token, _} = Guardian.test_token_auth(%{name: "Juan", id: 1, lastname: "Rincon", email: "juan@mail.com"})
       response =
         conn
-        |> put_req_header("authorization", Token.auth_sign(%{email: "juan@mail.com", user_id: 1}))
+        |> put_req_header("authorization", "Bearer "<>token)
         |> get(Routes.word_path(conn, :get_words, 1, 5))
         |> json_response(:ok)
 
@@ -47,10 +49,10 @@ defmodule HangmanWeb.WordControllerTest do
 
     test "Returns a list of words matched" do
       conn = build_conn()
-
+      {:ok, token, _} = Guardian.test_token_auth(%{name: "Juan", id: 1, lastname: "Rincon", email: "juan@mail.com"})
       response =
         conn
-        |> put_req_header("authorization", Token.auth_sign(%{email: "juan@mail.com", user_id: 1}))
+        |> put_req_header("authorization", "Bearer "<>token)
         |> get(Routes.word_path(conn, :get_words, 1, 5, %{char: "a"}))
         |> json_response(:ok)
 
@@ -65,10 +67,10 @@ defmodule HangmanWeb.WordControllerTest do
 
     test "Error when 'words' is empty" do
       conn = build_conn()
-
+      {:ok, token, _} = Guardian.test_token_auth(%{name: "Juan", id: 1, lastname: "Rincon", email: "juan@mail.com"})
       response =
         conn
-        |> put_req_header("authorization", Token.auth_sign(%{email: "juan@mail.com", user_id: 1}))
+        |> put_req_header("authorization", "Bearer "<>token)
         |> get(Routes.word_path(conn, :get_words))
         |> json_response(:ok)
 
@@ -81,8 +83,9 @@ defmodule HangmanWeb.WordControllerTest do
   describe "[GET] /word/:difficulty:" do
     setup do
       conn = build_conn()
+      {:ok, token, _} = Guardian.test_token_auth(%{name: "Juan", id: 1, lastname: "Rincon", email: "juan@mail.com"})
       conn
-      |> put_req_header("authorization", Token.auth_sign(%{email: "juan@mail.com", user_id: 1}))
+      |> put_req_header("authorization", "Bearer "<>token)
       |> post(Routes.word_path(conn, :create_word, %{word: "apple"}))
       |> json_response(201)
     end
@@ -138,8 +141,9 @@ defmodule HangmanWeb.WordControllerTest do
   describe "[GET] /words/:id:" do
     setup do
       conn = build_conn()
+      {:ok, token, _} = Guardian.test_token_auth(%{name: "Juan", id: 1, lastname: "Rincon", email: "juan@mail.com"})
       params = conn
-      |> put_req_header("authorization", Token.auth_sign(%{email: "juan@mail.com", user_id: 1}))
+      |> put_req_header("authorization", "Bearer "<>token)
       |> post(Routes.word_path(conn, :create_word, %{word: "apple"}))
       |> json_response(201)
 
@@ -148,10 +152,10 @@ defmodule HangmanWeb.WordControllerTest do
 
     test "Returns the word found", %{params: params} do
       conn = build_conn()
-
+      {:ok, token, _} = Guardian.test_token_auth(%{name: "Juan", id: 1, lastname: "Rincon", email: "juan@mail.com"})
       response =
         conn
-        |> put_req_header("authorization", Token.auth_sign(%{email: "juan@mail.com", user_id: 1}))
+        |> put_req_header("authorization", "Bearer "<>token)
         |> get(Routes.word_path(conn, :get_word, params["word"]["id"]))
         |> json_response(:ok)
 
@@ -166,10 +170,10 @@ defmodule HangmanWeb.WordControllerTest do
 
     test "Error when 'id' is wrong" do
       conn = build_conn()
-
+      {:ok, token, _} = Guardian.test_token_auth(%{name: "Juan", id: 1, lastname: "Rincon", email: "juan@mail.com"})
       response =
         conn
-        |> put_req_header("authorization", Token.auth_sign(%{email: "juan@mail.com", user_id: 1}))
+        |> put_req_header("authorization", "Bearer "<>token)
         |> get(Routes.word_path(conn, :get_word, 0))
         |> json_response(404)
 
@@ -182,8 +186,9 @@ defmodule HangmanWeb.WordControllerTest do
   describe "[POST] /words:" do
     setup do
       conn = build_conn()
+      {:ok, token, _} = Guardian.test_token_auth(%{name: "Juan", id: 1, lastname: "Rincon", email: "juan@mail.com"})
       params = conn
-      |> put_req_header("authorization", Token.auth_sign(%{email: "juan@mail.com", user_id: 1}))
+      |> put_req_header("authorization", "Bearer "<>token)
       |> post(Routes.word_path(conn, :create_word, %{word: "apple"}))
       |> json_response(201)
 
@@ -192,10 +197,10 @@ defmodule HangmanWeb.WordControllerTest do
 
     test "Returns the word created" do
       conn = build_conn()
-
+      {:ok, token, _} = Guardian.test_token_auth(%{name: "Juan", id: 1, lastname: "Rincon", email: "juan@mail.com"})
       response =
         conn
-        |> put_req_header("authorization", Token.auth_sign(%{email: "juan@mail.com", user_id: 1}))
+        |> put_req_header("authorization", "Bearer "<>token)
         |> post(Routes.word_path(conn, :create_word, %{word: "lion"}))
         |> json_response(201)
 
@@ -210,10 +215,10 @@ defmodule HangmanWeb.WordControllerTest do
 
     test "Error when 'word' is empty" do
       conn = build_conn()
-
+      {:ok, token, _} = Guardian.test_token_auth(%{name: "Juan", id: 1, lastname: "Rincon", email: "juan@mail.com"})
       response =
         conn
-        |> put_req_header("authorization", Token.auth_sign(%{email: "juan@mail.com", user_id: 1}))
+        |> put_req_header("authorization", "Bearer "<>token)
         |> post(Routes.word_path(conn, :create_word))
         |> json_response(400)
 
@@ -224,10 +229,10 @@ defmodule HangmanWeb.WordControllerTest do
 
     test "Error when 'word' already exists" do
       conn = build_conn()
-
+      {:ok, token, _} = Guardian.test_token_auth(%{name: "Juan", id: 1, lastname: "Rincon", email: "juan@mail.com"})
       response =
         conn
-        |> put_req_header("authorization", Token.auth_sign(%{email: "juan@mail.com", user_id: 1}))
+        |> put_req_header("authorization", "Bearer "<>token)
         |> post(Routes.word_path(conn, :create_word, %{word: "apple"}))
         |> json_response(400)
 
@@ -238,10 +243,10 @@ defmodule HangmanWeb.WordControllerTest do
 
     test "Error when 'word' is invalid format" do
       conn = build_conn()
-
+      {:ok, token, _} = Guardian.test_token_auth(%{name: "Juan", id: 1, lastname: "Rincon", email: "juan@mail.com"})
       response =
         conn
-        |> put_req_header("authorization", Token.auth_sign(%{email: "juan@mail.com", user_id: 1}))
+        |> put_req_header("authorization", "Bearer "<>token)
         |> post(Routes.word_path(conn, :create_word, %{word: "42423"}))
         |> json_response(400)
 
@@ -254,8 +259,9 @@ defmodule HangmanWeb.WordControllerTest do
   describe "[PUT] /words/:id:" do
     setup do
       conn = build_conn()
+      {:ok, token, _} = Guardian.test_token_auth(%{name: "Juan", id: 1, lastname: "Rincon", email: "juan@mail.com"})
       params = conn
-      |> put_req_header("authorization", Token.auth_sign(%{email: "juan@mail.com", user_id: 1}))
+      |> put_req_header("authorization", "Bearer "<>token)
       |> post(Routes.word_path(conn, :create_word, %{word: "apple"}))
       |> json_response(201)
 
@@ -264,10 +270,10 @@ defmodule HangmanWeb.WordControllerTest do
 
     test "Returns the word updated", %{params: params} do
       conn = build_conn()
-
+      {:ok, token, _} = Guardian.test_token_auth(%{name: "Juan", id: 1, lastname: "Rincon", email: "juan@mail.com"})
       response =
         conn
-        |> put_req_header("authorization", Token.auth_sign(%{email: "juan@mail.com", user_id: 1}))
+        |> put_req_header("authorization", "Bearer "<>token)
         |> put(Routes.word_path(conn, :update_word, params["word"]["id"],%{word: "lion"}))
         |> json_response(205)
 
@@ -282,10 +288,10 @@ defmodule HangmanWeb.WordControllerTest do
 
     test "Error when 'id' is empty" do
       conn = build_conn()
-
+      {:ok, token, _} = Guardian.test_token_auth(%{name: "Juan", id: 1, lastname: "Rincon", email: "juan@mail.com"})
       response =
         conn
-        |> put_req_header("authorization", Token.auth_sign(%{email: "juan@mail.com", user_id: 1}))
+        |> put_req_header("authorization", "Bearer "<>token)
         |> put(Routes.word_path(conn, :update_word, %{word: "lion"}))
         |> json_response(404)
 
@@ -296,10 +302,10 @@ defmodule HangmanWeb.WordControllerTest do
 
     test "Error when 'id' is wrong" do
       conn = build_conn()
-
+      {:ok, token, _} = Guardian.test_token_auth(%{name: "Juan", id: 1, lastname: "Rincon", email: "juan@mail.com"})
       response =
         conn
-        |> put_req_header("authorization", Token.auth_sign(%{email: "juan@mail.com", user_id: 1}))
+        |> put_req_header("authorization", "Bearer "<>token)
         |> put(Routes.word_path(conn, :update_word, 0, %{word: "lion"}))
         |> json_response(404)
 
@@ -312,8 +318,9 @@ defmodule HangmanWeb.WordControllerTest do
   describe "[DELTE] /words/:id:" do
     setup do
       conn = build_conn()
+      {:ok, token, _} = Guardian.test_token_auth(%{name: "Juan", id: 1, lastname: "Rincon", email: "juan@mail.com"})
       params = conn
-      |> put_req_header("authorization", Token.auth_sign(%{email: "juan@mail.com", user_id: 1}))
+      |> put_req_header("authorization", "Bearer "<>token)
       |> post(Routes.word_path(conn, :create_word, %{word: "apple"}))
       |> json_response(201)
 
@@ -322,10 +329,10 @@ defmodule HangmanWeb.WordControllerTest do
 
     test "Returns the word deleted", %{params: params} do
       conn = build_conn()
-
+      {:ok, token, _} = Guardian.test_token_auth(%{name: "Juan", id: 1, lastname: "Rincon", email: "juan@mail.com"})
       response =
         conn
-        |> put_req_header("authorization", Token.auth_sign(%{email: "juan@mail.com", user_id: 1}))
+        |> put_req_header("authorization", "Bearer "<>token)
         |> delete(Routes.word_path(conn, :delete_word, params["word"]["id"]))
         |> json_response(205)
 
@@ -340,10 +347,10 @@ defmodule HangmanWeb.WordControllerTest do
 
     test "Error when 'id' is empty" do
       conn = build_conn()
-
+      {:ok, token, _} = Guardian.test_token_auth(%{name: "Juan", id: 1, lastname: "Rincon", email: "juan@mail.com"})
       response =
         conn
-        |> put_req_header("authorization", Token.auth_sign(%{email: "juan@mail.com", user_id: 1}))
+        |> put_req_header("authorization", "Bearer "<>token)
         |> delete(Routes.word_path(conn, :delete_word))
         |> json_response(404)
 
@@ -354,10 +361,10 @@ defmodule HangmanWeb.WordControllerTest do
 
     test "Error when 'id' is wrong" do
       conn = build_conn()
-
+      {:ok, token, _} = Guardian.test_token_auth(%{name: "Juan", id: 1, lastname: "Rincon", email: "juan@mail.com"})
       response =
         conn
-        |> put_req_header("authorization", Token.auth_sign(%{email: "juan@mail.com", user_id: 1}))
+        |> put_req_header("authorization", "Bearer "<>token)
         |> delete(Routes.word_path(conn, :delete_word, 0))
         |> json_response(404)
 

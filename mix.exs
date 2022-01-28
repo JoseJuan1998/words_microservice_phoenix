@@ -51,7 +51,8 @@ defmodule Hangman.MixProject do
       {:excoveralls, "~> 0.10", only: :test},
       {:cors_plug, "~> 2.0"},
       {:json, "~> 1.4"},
-      {:amqp, "~> 3.0"}
+      {:amqp, "~> 3.0"},
+      {:guardian, "~> 2.2"}
     ]
   end
 

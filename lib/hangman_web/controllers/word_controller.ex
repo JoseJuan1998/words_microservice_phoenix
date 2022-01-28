@@ -4,15 +4,11 @@ defmodule HangmanWeb.WordController do
   use HangmanWeb, :controller
   alias Hangman.Words
   alias Hangman.Words.Word
-  alias Hangman.Token
+  alias HangmanWeb.Auth.Guardian
 
   action_fallback HangmanWeb.WordErrorController
 
-  plug :authenticate_api_user when action in [:get_word, :get_words, :create_word, :update_word, :delete_word]
-
   # coveralls-ignore-start
-
-
   swagger_path :get_words do
     get("/manager/words/{np}/{nr}?char={char}&field={field}&order={order}")
     summary("All words")
@@ -64,7 +60,6 @@ defmodule HangmanWeb.WordController do
       true ->
         word = Enum.at(words, 0)
         report_params = %{word: word.word}
-        IO.inspect(report_params)
         rabbit_connect(report_params)
         conn
         |> put_status(200)
@@ -118,11 +113,11 @@ defmodule HangmanWeb.WordController do
   def create_word(conn, params) do
     case Words.create_word(params) do
       {:ok, word} ->
-        [token] = get_req_header(conn, "authorization")
-        {:ok, user} = Token.verify_auth(token)
-        report_params = %{email: user.email, word: word.word, action: "INSERT"}
+        ["Bearer "<>token] = get_req_header(conn, "authorization")
+        {:ok, %{"email" => email}} = Guardian.decode_and_verify(token)
+        report_params = %{email: email, word: word.word, action: "INSERT"}
         rabbit_connect(report_params)
-        report_params = %{word: word.word, user: user.email}
+        report_params = %{word: word.word, user: email}
         rabbit_connect(report_params)
         conn
         |> put_status(201)
@@ -150,11 +145,11 @@ defmodule HangmanWeb.WordController do
   def update_word(conn, params) do
     case Words.update_word(params) do
       {:ok, word} ->
-        [token] = get_req_header(conn, "authorization")
-        {:ok, user} = Token.verify_auth(token)
-        report_params = %{email: user.email, word: word.word, action: "UPDATE"}
+        ["Bearer "<>token] = get_req_header(conn, "authorization")
+        {:ok, %{"email" => email}} = Guardian.decode_and_verify(token)
+        report_params = %{email: email, word: word.word, action: "UPDATE"}
         rabbit_connect(report_params)
-        report_params = %{word: word.word, user: user.email}
+        report_params = %{word: word.word, user: email}
         rabbit_connect(report_params)
         conn
         |> put_status(205)
@@ -181,9 +176,9 @@ defmodule HangmanWeb.WordController do
   def delete_word(conn, params) do
     case Words.delete_word(params) do
       {:ok, word} ->
-        [token] = get_req_header(conn, "authorization")
-        {:ok, user} = Token.verify_auth(token)
-        report_params = %{email: user.email, word: word.word, action: "DELETE"}
+        ["Bearer "<>token] = get_req_header(conn, "authorization")
+        {:ok, %{"email" => email}} = Guardian.decode_and_verify(token)
+        report_params = %{email: email, word: word.word, action: "DELETE"}
         rabbit_connect(report_params)
         conn
         |> put_status(205)
@@ -194,8 +189,7 @@ defmodule HangmanWeb.WordController do
   end
 
   defp rabbit_connect(params) do
-    # options = [host: "localhost", port: 5672, virtual_host: "/", username: "prueba", password: "prueba"]
-    {:ok, connection} = AMQP.Connection.open("amqp://prueba:prueba@20.127.108.224")
+    {:ok, connection} = AMQP.Connection.open(System.get_env("RABBIT_URL"))
     {:ok, channel} = AMQP.Channel.open(connection)
     AMQP.Queue.declare(channel, "log")
     message = JSON.encode!(params)

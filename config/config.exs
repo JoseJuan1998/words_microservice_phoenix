@@ -26,6 +26,10 @@ config :hangman, HangmanWeb.Endpoint,
   pubsub_server: Hangman.PubSub,
   live_view: [signing_salt: "ewSxBRgK"]
 
+config :hangman, HangmanWeb.Auth.Guardian,
+  issuer: "hangman",
+  secret_key: "${GUARDIAN_KEY}"
+
 # Configures the mailer
 #
 # By default it uses the "Local" adapter which stores the emails

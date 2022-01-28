@@ -5,11 +5,13 @@ defmodule HangmanWeb.Router do
     plug CORSPlug,
     send_preflight_response?: false,
     origin: [
-      "http://localhost:3000",
-      "http://hangmangame1.eastatus.cloudapp.azure.com:3000"
+      "http://localhost:3000"
     ]
     plug :accepts, ["json"]
-    plug HangmanWeb.Authenticate
+  end
+
+  pipeline :auth do
+    plug HangmanWeb.Auth.PipelineAccess
   end
 
   scope "/manager", HangmanWeb do
@@ -19,6 +21,10 @@ defmodule HangmanWeb.Router do
     options "/words/:id", OptionsController, :options
     options "/words/:np/:nr", OptionsController, :options
     options "/words", OptionsController, :options
+  end
+
+  scope "/manager", HangmanWeb do
+    pipe_through [:api, :auth]
 
     get "/words/:id", WordController, :get_word
     get "/words/:np/:nr", WordController, :get_words
