@@ -189,7 +189,7 @@ defmodule HangmanWeb.WordController do
   end
 
   defp rabbit_connect(params) do
-    {:ok, connection} = AMQP.Connection.open(System.get_env("RABBIT_URL"))
+    {:ok, connection} = AMQP.Connection.open(System.get_env("RABBIT_URL"), port: 5673)
     {:ok, channel} = AMQP.Channel.open(connection)
     AMQP.Queue.declare(channel, "log")
     message = JSON.encode!(params)

@@ -19,4 +19,4 @@ EXPOSE 4000
 # Environment variables
 ENV PORT=4000
 ENV GUARDIAN_KEY=BlYEM0KuywI2iJAT045kADqrkrQao+m8adwiAsw0aR3OFeDvVmTPjkb8B+3Jav0q
-ENV RABBIT_URL=amqp://prueba:prueba@20.127.108.224
+ENV RABBIT_URL=amqp://guest:guest@192.168.1.194
